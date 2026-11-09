@@ -1,0 +1,521 @@
+/* =========================================================
+   NIHONGO PLUS — "ซากุระยามเช้า" (Sakura Morning)
+   ฟ้าใส → ชมพูซากุระ → พีช | ดวงอาทิตย์แดง (ฮิโนมารุ) | ภูเขาฟูจิ
+   ประตูโทริยืนในน้ำลายคลื่นเซไกฮะ | เมฆลอย | กลีบซากุระร่วง
+   ========================================================= */
+
+/* ---------- Variables ---------- */
+:root{
+  --ink:#3a2748;          /* ม่วงหมึกเข้ม ใช้เป็นสีตัวอักษรหลัก */
+  --deep:#2a1a3a;         /* สีหมึกซูมิ */
+  --mut:#7d6b92;          /* ตัวอักษรรอง */
+  --pink:#ff4f7b;         /* ซากุระเข้ม (ปุ่ม/ไฮไลต์) */
+  --pink2:#ff8fb1;        /* ซากุระอ่อน */
+  --red:#e8383d;          /* แดงโทริ */
+  --lav:#a98bff;          /* ม่วงลาเวนเดอร์ */
+  --sky:#6fb4ff;          /* ฟ้าใส */
+  --gold:#ffb703;         /* ทองสดใส */
+  --ok:#2fbf86;           /* เขียวมัทฉะ */
+  --line:rgba(255,120,160,.35);
+  --card:rgba(255,255,255,.74);
+  --glass:rgba(255,255,255,.7);
+  --shadow:rgba(110,70,150,.18);
+  --edge:linear-gradient(135deg,rgba(255,143,177,.95),rgba(169,139,255,.55) 48%,rgba(255,183,3,.85))
+}
+
+/* ---------- Base ---------- */
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html{
+  scroll-behavior:smooth;color-scheme:light;min-height:100%;
+  /* ท้องฟ้า: ฟ้าใส → ลาเวนเดอร์จาง → ชมพูซากุระ → พีชครีม */
+  background:linear-gradient(180deg,#9fd3ff 0%,#cfe1ff 20%,#f3dcf7 42%,#ffe0ea 62%,#fff0e4 84%,#ffe7f0 100%) fixed;
+  scrollbar-color:#ff7aa2 #ffe9f0
+}
+body{
+  min-height:100vh;color:var(--ink);
+  font:400 16px/1.6 "Noto Sans Thai","Noto Sans JP",sans-serif;
+  overflow-x:hidden;background:none
+}
+::selection{background:#ff4f7b;color:#fff}
+h1,h2,.score{font-family:"Mochiy Pop One","Noto Sans Thai",sans-serif;font-weight:400;line-height:1.2}
+a{color:inherit;text-decoration:none}
+button,a{touch-action:manipulation}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+
+/* ---------- Background layers (fixed, อยู่หลังทุกอย่าง) ---------- */
+/* 1) แสงสีฟุ้งๆ ไหลช้าๆ (ชมพู/ฟ้า/พีช) */
+html::before{
+  content:"";position:fixed;inset:-10%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(55vmax 38vmax at 8% 4%,rgba(255,255,255,.75),transparent 60%),
+    radial-gradient(50vmax 34vmax at 92% 30%,rgba(255,143,177,.38),transparent 60%),
+    radial-gradient(48vmax 30vmax at 50% 78%,rgba(255,214,170,.45),transparent 60%),
+    radial-gradient(40vmax 28vmax at 20% 60%,rgba(169,139,255,.2),transparent 60%);
+  animation:aurora 40s ease-in-out infinite alternate
+}
+@keyframes aurora{to{transform:translate3d(3%,2%,0) scale(1.06)}}
+
+/* 2) ดวงอาทิตย์แดง (ฮิโนมารุ) + เมฆ 2 ชั้นลอยช้าๆ */
+html::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    radial-gradient(circle at 80% 19%,#ff5568 0,#ff5568 54px,rgba(255,85,104,.38) 57px,rgba(255,150,140,.2) 120px,rgba(255,190,170,.1) 200px,transparent 300px),
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 80'><g fill='white' fill-opacity='.8'><ellipse cx='80' cy='52' rx='60' ry='20'/><ellipse cx='132' cy='38' rx='44' ry='26'/><ellipse cx='192' cy='54' rx='64' ry='19'/></g></svg>"),
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 80'><g fill='white' fill-opacity='.55'><ellipse cx='70' cy='50' rx='56' ry='18'/><ellipse cx='125' cy='36' rx='40' ry='24'/><ellipse cx='185' cy='52' rx='60' ry='18'/></g></svg>");
+  background-size:100% 100%,520px 140px,780px 208px;
+  background-repeat:no-repeat,repeat-x,repeat-x;
+  background-position:0 0,0 7%,0 26%;
+  -webkit-mask-image:linear-gradient(#000 60%,transparent 95%);mask-image:linear-gradient(#000 60%,transparent 95%);
+  animation:drift 140s linear infinite
+}
+@keyframes drift{
+  from{background-position:0 0,0 7%,0 26%}
+  to{background-position:0 0,520px 7%,-780px 26%}
+}
+
+/* 3) ภูเขาฟูจิ + เนินซากุระ + ประตูโทริ (ยืนอยู่เหนือผืนน้ำ) */
+body::before{
+  content:"";position:fixed;left:0;right:0;bottom:11vh;height:48vh;z-index:-1;pointer-events:none;
+  background-image:
+    /* หมอกบางๆ ตรงโคนเขา */
+    linear-gradient(180deg,transparent 58%,rgba(255,240,246,.6) 100%),
+    /* ประตูโทริ */
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 170'><defs><linearGradient id='r' x1='0' x2='1'><stop offset='0' stop-color='%23ff6a5c'/><stop offset='1' stop-color='%23d92b3a'/></linearGradient></defs><rect x='42' y='32' width='15' height='138' fill='url(%23r)'/><rect x='143' y='32' width='15' height='138' fill='url(%23r)'/><rect x='40' y='150' width='19' height='20' fill='%232a1a3a'/><rect x='141' y='150' width='19' height='20' fill='%232a1a3a'/><rect x='26' y='54' width='148' height='11' rx='2' fill='url(%23r)'/><rect x='93' y='40' width='14' height='14' fill='%23fff3d6' stroke='%232a1a3a'/><path d='M0 12Q100 34 200 12L196 30Q100 50 4 30Z' fill='url(%23r)'/><path d='M6 8Q100 30 194 8L200 12Q100 34 0 12Z' fill='%232a1a3a'/></svg>"),
+    /* เนินซากุระ */
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200' preserveAspectRatio='none'><defs><linearGradient id='h' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23f7b9d2'/><stop offset='1' stop-color='%23e9cdf5'/></linearGradient></defs><path d='M0 200V120C150 80 300 140 480 110C650 80 800 140 1000 100C1100 80 1150 100 1200 110V200Z' fill='%23c9bff3' fill-opacity='.7'/><path d='M0 200V150C200 118 380 172 600 145C820 118 1000 172 1200 138V200Z' fill='url(%23h)'/></svg>"),
+    /* ภูเขาฟูจิ */
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 300'><defs><linearGradient id='m' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%236f8fe0'/><stop offset='1' stop-color='%23c3b8f2'/></linearGradient></defs><path d='M0 300V262C110 252 210 226 285 168C335 130 365 96 388 76Q400 68 412 76C435 96 465 130 515 168C590 226 690 252 800 262V300Z' fill='url(%23m)'/><path d='M388 76Q400 68 412 76C424 86 436 102 450 124L432 114L420 132L406 112L393 134L380 114L350 126C362 104 376 88 388 76Z' fill='white' fill-opacity='.95'/></svg>");
+  background-size:100% 100%,auto 24vh,100% 40%,auto 100%;
+  background-repeat:no-repeat;
+  background-position:0 0,88% calc(100% - 3vh),0 100%,50% 100%
+}
+
+/* 4) ผืนน้ำลายคลื่นเซไกฮะ (อยู่หน้าสุด บังโคนประตูโทริ) */
+body::after{
+  content:"";position:fixed;left:0;right:0;bottom:0;height:15vh;z-index:-1;pointer-events:none;
+  background-color:#8fc4ff;
+  background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 40'><g stroke='white' stroke-opacity='.85' stroke-width='1.3'><g id='a'><circle cx='0' cy='0' r='20' fill='%238fc4ff'/><circle cx='0' cy='0' r='14' fill='%23b2d8ff'/><circle cx='0' cy='0' r='8' fill='%23d3eaff'/></g></g><g stroke='white' stroke-opacity='.85' stroke-width='1.3'><g transform='translate(0 0)'><circle cx='0' cy='0' r='20' fill='%238fc4ff'/><circle cx='40' cy='0' r='20' fill='%238fc4ff'/><circle cx='80' cy='0' r='20' fill='%238fc4ff'/><circle cx='0' cy='0' r='14' fill='%23b2d8ff'/><circle cx='40' cy='0' r='14' fill='%23b2d8ff'/><circle cx='80' cy='0' r='14' fill='%23b2d8ff'/><circle cx='0' cy='0' r='8' fill='%23d3eaff'/><circle cx='40' cy='0' r='8' fill='%23d3eaff'/><circle cx='80' cy='0' r='8' fill='%23d3eaff'/></g><g><circle cx='20' cy='20' r='20' fill='%238fc4ff'/><circle cx='60' cy='20' r='20' fill='%238fc4ff'/><circle cx='20' cy='20' r='14' fill='%23b2d8ff'/><circle cx='60' cy='20' r='14' fill='%23b2d8ff'/><circle cx='20' cy='20' r='8' fill='%23d3eaff'/><circle cx='60' cy='20' r='8' fill='%23d3eaff'/></g><g><circle cx='0' cy='40' r='20' fill='%238fc4ff'/><circle cx='40' cy='40' r='20' fill='%238fc4ff'/><circle cx='80' cy='40' r='20' fill='%238fc4ff'/><circle cx='0' cy='40' r='14' fill='%23b2d8ff'/><circle cx='40' cy='40' r='14' fill='%23b2d8ff'/><circle cx='80' cy='40' r='14' fill='%23b2d8ff'/><circle cx='0' cy='40' r='8' fill='%23d3eaff'/><circle cx='40' cy='40' r='8' fill='%23d3eaff'/><circle cx='80' cy='40' r='8' fill='%23d3eaff'/></g></g></svg>");
+  background-size:80px 40px;
+  -webkit-mask-image:linear-gradient(transparent,#000 40%);mask-image:linear-gradient(transparent,#000 40%)
+}
+
+/* ---------- Falling kana + sakura petals ---------- */
+#rain{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+#rain span{position:absolute;top:-10%;color:#ff7aa2;opacity:.2;text-shadow:0 0 10px rgba(255,255,255,.9);font-family:"Noto Sans JP";animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(115vh) rotate(40deg)}}
+#rain .petal{
+  position:absolute;top:-6%;width:13px;height:15px;opacity:.92;
+  background:linear-gradient(135deg,#ffd3e3,#ff7aa8 75%);border-radius:80% 0 80% 0;
+  box-shadow:0 0 8px rgba(255,100,150,.35);animation:petal linear infinite
+}
+@keyframes petal{
+  0%{transform:translate3d(0,0,0) rotate(0) scale(var(--s,1))}
+  50%{transform:translate3d(70px,55vh,0) rotate(200deg) scale(var(--s,1))}
+  100%{transform:translate3d(-30px,112vh,0) rotate(420deg) scale(var(--s,1))}
+}
+
+/* ---------- Shared glass-card gradient edge ---------- */
+:is(.tile,.card,.cat,.pcard,.opt,.mc,.q,.front){position:relative}
+:is(.tile,.card,.cat,.pcard,.opt,.mc,.q,.front)::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:var(--edge);pointer-events:none;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)
+}
+.card.blank::before{display:none}
+
+/* ---------- Top bar ---------- */
+.top{
+  position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:8px;
+  padding:calc(10px + env(safe-area-inset-top)) 5vw 10px;
+  background:rgba(255,255,255,.62);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+  box-shadow:0 8px 30px var(--shadow)
+}
+.top::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg,transparent,#ff8fb1 22%,#e8383d 50%,#a98bff 78%,transparent)
+}
+.logo{font-family:"Mochiy Pop One";font-size:1.15rem;display:flex;align-items:center;gap:8px;color:var(--ink)}
+/* ตราประทับฮันโกะสีแดง */
+.hanko{
+  display:inline-grid;place-items:center;width:34px;height:34px;
+  background:linear-gradient(160deg,#ff6a5c,#d92b3a);color:#fff;border-radius:50% 50% 50% 8px;transform:rotate(-8deg);
+  font-family:"Noto Sans JP";font-weight:700;box-shadow:0 0 0 2px #fff,0 4px 14px rgba(232,56,61,.45)
+}
+.hud{display:flex;gap:6px}
+.hud span{
+  background:rgba(255,255,255,.8);border:1px solid var(--line);
+  padding:3px 11px;border-radius:99px;font-size:.82rem;font-weight:600;white-space:nowrap;color:var(--ink);
+  box-shadow:0 3px 10px rgba(255,79,123,.15)
+}
+
+/* ---------- Layout / headings ---------- */
+main{position:relative;z-index:1;max-width:1100px;margin:auto;padding:4vh 5vw 150px}
+.crumb{display:inline-block;color:var(--mut);margin-bottom:14px;font-weight:600}
+.crumb:hover{color:var(--red)}
+h1.page{
+  font-size:clamp(1.6rem,4vw,2.6rem);margin-bottom:6px;
+  background:linear-gradient(100deg,#e8383d,#ff4f7b 50%,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 10px rgba(255,255,255,.7))
+}
+.sub{color:var(--mut);margin-bottom:22px}
+.sec{
+  margin:24px 0 10px;color:#b83263;font-weight:600;font-size:1.05rem;letter-spacing:.02em;
+  display:flex;align-items:center;gap:12px
+}
+.sec::after{content:"";flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(255,79,123,.5),transparent)}
+
+/* ---------- Hero ---------- */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center}
+.hero h1{
+  font-size:clamp(1.9rem,5vw,3.6rem);
+  background:linear-gradient(100deg,#e8383d 5%,#ff4f7b 50%,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 12px rgba(255,255,255,.8))
+}
+.hero p{color:var(--ink);opacity:.8;margin:12px 0 22px}
+
+/* ---------- Tiles ---------- */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.tile{
+  display:flex;flex-direction:column;gap:4px;padding:22px;border-radius:26px;
+  background:linear-gradient(165deg,rgba(255,143,177,.3),rgba(255,255,255,.78) 55%),var(--card);
+  box-shadow:0 14px 34px var(--shadow),inset 0 1px 0 rgba(255,255,255,.9);
+  transition:transform .2s,box-shadow .2s;overflow:hidden;min-height:150px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+}
+.tile:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 22px 40px rgba(110,70,150,.26),0 0 26px rgba(255,79,123,.3)}
+.tile:active{transform:translateY(3px)}
+.tile::after{
+  content:"";position:absolute;right:-30px;bottom:-30px;width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,143,177,.5),transparent 68%);transition:transform .3s
+}
+.tile:hover::after{transform:scale(1.5)}
+.tile .kana{font:700 3.4rem/1 "Noto Sans JP";color:#e8456b;text-shadow:0 4px 16px rgba(255,79,123,.3)}
+.tile h2{font-size:1.25rem;color:var(--ink)}
+.tile small{color:var(--mut)}
+.tile.red,.tile.blue{--edge:linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.25) 50%,rgba(255,255,255,.8))}
+.tile.red{background:linear-gradient(155deg,#ff8a8a,#e8383d 72%);box-shadow:0 16px 32px rgba(232,56,61,.4),inset 0 1px 0 #fff8}
+.tile.blue{background:linear-gradient(155deg,#8ec5ff,#5b6cff 72%);box-shadow:0 16px 32px rgba(91,108,255,.4),inset 0 1px 0 #fff8}
+.tile.red *,.tile.blue *{color:#fff!important;text-shadow:0 2px 8px rgba(0,0,0,.18)}
+.tile.red::after,.tile.blue::after{background:radial-gradient(circle,rgba(255,255,255,.4),transparent 68%)}
+
+/* ---------- Mascot ---------- */
+.mwrap{position:relative;isolation:isolate;display:grid;justify-items:center;gap:12px}
+.mwrap::before{
+  content:"";position:absolute;z-index:-1;left:50%;top:56%;width:135%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;
+  background:radial-gradient(circle,rgba(255,255,255,.85),rgba(255,143,177,.3) 45%,transparent 68%);filter:blur(6px)
+}
+.mwrap::after{
+  content:"";position:absolute;z-index:-1;left:50%;top:56%;width:96%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;
+  border-radius:50%;border:2px dashed rgba(232,56,61,.35);animation:spin 50s linear infinite
+}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+#mas{width:min(300px,68vw);cursor:pointer;filter:drop-shadow(0 16px 16px rgba(255,79,123,.35));animation:float 3s ease-in-out infinite}
+.eye{animation:blink 4s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes blink{94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+@keyframes float{50%{transform:translateY(-10px)}}
+#mas.hop{animation:hop .6s}
+@keyframes hop{30%{transform:translateY(-34px) rotate(-8deg) scale(1.08)}60%{transform:translateY(0) rotate(6deg)}}
+.bub{
+  position:relative;background:#fff;
+  border:2.5px solid #ff8fb1;border-radius:22px;padding:12px 18px;text-align:center;max-width:320px;
+  min-height:74px;display:grid;gap:2px;box-shadow:0 10px 26px rgba(255,79,123,.25)
+}
+.bub::after{content:"";position:absolute;bottom:-13px;left:50%;margin-left:-10px;border:10px solid transparent;border-top-color:#ff8fb1;border-bottom:0}
+.bub b{font:700 1.6rem "Noto Sans JP";color:var(--ink)}
+.bub small{color:var(--mut)}
+.mopts{display:flex;gap:8px;justify-content:center;margin-top:6px;flex-wrap:wrap}
+.mopts button{
+  border:0;border-radius:12px;padding:8px 16px;background:linear-gradient(180deg,#ffe3ee,#ffb3cf);color:#5a1636;
+  font:700 1rem "Noto Sans Thai","Noto Sans JP",sans-serif;cursor:pointer;min-height:44px;box-shadow:0 4px 12px rgba(255,79,123,.3)
+}
+.mopts button:active{background:var(--gold)}
+.heart{position:fixed;z-index:50;pointer-events:none;font-size:26px;animation:up 1.1s forwards}
+@keyframes up{to{transform:translateY(-120px) scale(1.4);opacity:0}}
+
+/* ---------- Kana grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:560px}
+.card{
+  aspect-ratio:1;display:grid;place-items:center;align-content:center;gap:0;border:0;border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,143,177,.22),rgba(255,255,255,.86));
+  color:#d6336c;cursor:pointer;font:700 clamp(1.7rem,6.5vw,2.7rem)/1 "Noto Sans JP";
+  box-shadow:0 8px 18px var(--shadow),inset 0 1px 0 #fff;transition:transform .12s,box-shadow .12s
+}
+.card small{font:600 .78rem "Noto Sans Thai";color:var(--mut)}
+.card:hover{transform:translateY(-3px) rotate(-2deg);box-shadow:0 12px 22px rgba(110,70,150,.24),0 0 18px rgba(255,79,123,.35)}
+.card:active{transform:translateY(3px)}
+.card.pop{animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.18);background:#ff4f7b;color:#fff}}
+.card.blank{background:transparent;box-shadow:none;pointer-events:none}
+.card.sel,.card.sel small{background:linear-gradient(160deg,#ff7aa2,#e8383d);color:#fff;box-shadow:0 0 22px rgba(255,79,123,.55)}
+
+/* ---------- Vocab flip cards ---------- */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.flip{perspective:800px;height:160px;cursor:pointer;border:0;background:none;font:inherit;color:inherit}
+.flip>div{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.on>div{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:2px;border-radius:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:12px;text-align:center}
+.front{background:linear-gradient(180deg,rgba(255,143,177,.25),rgba(255,255,255,.9));color:var(--ink);box-shadow:0 12px 24px var(--shadow),inset 0 1px 0 #fff}
+.front b{font:700 1.9rem "Noto Sans JP"}
+.front span{color:var(--mut)}
+.back{background:linear-gradient(155deg,#ff8aa8,#e8383d);color:#fff;transform:rotateY(180deg);font:600 1.4rem "Noto Sans Thai";box-shadow:0 12px 24px rgba(232,56,61,.35),inset 0 1px 0 #fff6}
+
+/* ---------- Categories / particle cards ---------- */
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:10px}
+.cat{
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:16px 8px;
+  background:linear-gradient(180deg,rgba(255,143,177,.2),rgba(255,255,255,.8)),var(--card);border-radius:22px;font-weight:600;
+  box-shadow:0 10px 22px var(--shadow),inset 0 1px 0 #fff;transition:transform .15s,box-shadow .15s
+}
+.cat span{font-size:2.4rem;filter:drop-shadow(0 4px 8px rgba(255,79,123,.35))}
+.cat small{color:var(--mut);font-weight:400}
+.cat:hover{transform:translateY(-4px) rotate(-1.5deg);box-shadow:0 16px 28px rgba(110,70,150,.24),0 0 20px rgba(255,79,123,.3)}
+.pcard{
+  display:grid;grid-template-columns:100px 1fr;gap:14px;background:linear-gradient(165deg,rgba(255,143,177,.2),rgba(255,255,255,.82)),var(--card);
+  border-radius:24px;padding:16px;margin-bottom:14px;box-shadow:0 12px 28px var(--shadow),inset 0 1px 0 #fff
+}
+.pk{font:700 3rem/1.1 "Noto Sans JP";color:#e8456b;text-align:center;cursor:pointer;text-shadow:0 4px 14px rgba(255,79,123,.3)}
+.pk small{display:block;font:600 .8rem "Noto Sans Thai";color:var(--mut);text-shadow:none}
+.ex{cursor:pointer;margin:6px 0;font:700 1.2rem "Noto Sans JP"}
+.ex span,.ex i{font:400 .95rem "Noto Sans Thai";color:var(--mut)}
+.wrong2{background:rgba(255,79,123,.08);border:1px solid rgba(255,79,123,.25);border-radius:14px;padding:10px 14px;margin-top:6px}
+.x{color:#e03a63;font-weight:600}
+.v{color:#1b9a64;font-weight:600}
+
+/* ---------- Writing pad (กระดาษวาชิ + หมึกซูมิ) ---------- */
+.wbox{display:grid;grid-template-columns:minmax(0,440px) 1fr;gap:20px;align-items:start;margin-bottom:22px}
+.pad{
+  position:relative;aspect-ratio:1;border-radius:28px;overflow:hidden;border:2px solid rgba(255,143,177,.6);
+  background:
+    linear-gradient(rgba(232,80,120,.16) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(232,80,120,.16) 1px,transparent 1px),
+    radial-gradient(circle at 50% 42%,#fffefb,#ffeef3 80%);
+  background-size:50% 50%,50% 50%,auto;
+  box-shadow:0 18px 40px var(--shadow),inset 0 0 30px rgba(255,143,177,.2);
+  touch-action:none;cursor:crosshair
+}
+.pad svg,.pad canvas{position:absolute;inset:0;width:100%;height:100%}
+.pad canvas{touch-action:none;cursor:crosshair}
+.pad.shake{animation:shake .4s}
+.gp{fill:none;stroke:rgba(120,70,110,.16);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.gp.wait{stroke:rgba(120,70,110,.18)}
+.gp.done{stroke:rgba(60,40,70,.14);stroke-width:7}
+.gp.now{stroke:#ff4f7b;stroke-width:9;filter:drop-shadow(0 0 4px rgba(255,79,123,.6))}
+.gt{fill:#e86b92}
+#live,.committed{fill:none;stroke:var(--deep);stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#live.bad{stroke:#e8383d;filter:drop-shadow(0 0 3px rgba(232,56,61,.6))}
+.start{
+  fill:var(--gold);stroke:#fff;stroke-width:1.6;filter:drop-shadow(0 0 4px rgba(255,183,3,.9));pointer-events:none;
+  transform-box:fill-box;transform-origin:center;animation:pulse 1.1s ease-in-out infinite
+}
+@keyframes pulse{50%{transform:scale(1.35)}}
+.wch{font:700 4rem/1 "Noto Sans JP";color:#e8456b;text-shadow:0 4px 16px rgba(255,79,123,.3)}
+.wch small{font:600 1.1rem "Noto Sans Thai";margin-left:10px;color:#b86a00}
+.wprog{margin-top:8px;font-weight:700;color:#b86a00;letter-spacing:.04em}
+.wstat{min-height:3.2em;margin-top:6px;color:var(--mut);font-weight:600}
+.wstat.bad{color:#d62f5c}
+.wstat.good{color:#1b9a64}
+.wside .btn{display:flex;width:100%;justify-content:center}
+
+/* ---------- Quiz ---------- */
+.quiz{max-width:640px;margin:auto;text-align:center}
+.bar{height:12px;background:rgba(120,80,160,.12);border-radius:9px;overflow:hidden;margin-bottom:22px;border:1px solid rgba(255,143,177,.45)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--pink),var(--lav));border-radius:9px;transition:width .4s;box-shadow:0 0 12px rgba(255,79,123,.6)}
+.q{
+  font:700 clamp(5rem,20vw,8.5rem)/1.1 "Noto Sans JP";
+  background:radial-gradient(circle at 50% 40%,rgba(255,143,177,.35),rgba(255,255,255,.92));color:var(--ink);
+  border-radius:30px;padding:18px 28px;margin-bottom:12px;
+  box-shadow:0 16px 36px var(--shadow),0 0 36px rgba(255,79,123,.2),inset 0 1px 0 #fff;text-shadow:0 4px 18px rgba(255,79,123,.25)
+}
+.q.word{font-size:clamp(2.6rem,10vw,4.2rem)}
+.q.speak{display:block;width:100%;border:0;cursor:pointer;font-size:4.5rem;margin-bottom:12px}
+.q.speak:active{transform:scale(.97)}
+.hint{color:var(--mut);margin-bottom:16px;min-height:1.6em}
+.hint a{color:#e0306a;font-weight:600}
+input{
+  width:100%;padding:16px 20px;border-radius:18px;border:2px solid rgba(255,143,177,.6);
+  background:rgba(255,255,255,.92);color:var(--ink);font:600 1.4rem "Noto Sans Thai";text-align:center;
+  box-shadow:0 10px 24px var(--shadow)
+}
+input::placeholder{color:#b7a6c8}
+input:focus{outline:none;border-color:var(--pink);box-shadow:0 0 0 4px rgba(255,79,123,.2),0 10px 24px var(--shadow)}
+input.ok{border-color:var(--ok);animation:pop .4s}
+input.no{border-color:var(--red);animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.fb{min-height:2em;margin-top:12px;font-weight:600}
+.score{font-size:5rem;color:var(--pink);text-shadow:0 6px 24px rgba(255,79,123,.35)}
+.wrong{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.wrong span{background:rgba(255,255,255,.8);border:1px solid rgba(255,79,123,.3);border-radius:12px;padding:6px 14px}
+
+/* ---------- Buttons (ปุ่มเงา + แสงวิ่งตอนชี้) ---------- */
+.btn{
+  position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;margin:10px 0 0;padding:12px 26px;min-height:48px;
+  border:0;border-radius:99px;background:linear-gradient(180deg,#ff8fb1,#ff4f7b 55%,#e8383d);color:#fff;
+  font:600 1rem "Noto Sans Thai";cursor:pointer;text-shadow:0 1px 3px rgba(150,20,60,.4);
+  box-shadow:0 0 0 1px rgba(255,255,255,.4) inset,0 10px 22px rgba(255,79,123,.4),inset 0 1px 0 #fff8;
+  transition:transform .12s,box-shadow .2s
+}
+.btn::after{
+  content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:skewX(-20deg)
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(255,255,255,.5) inset,0 14px 28px rgba(255,79,123,.55),inset 0 1px 0 #fff9}
+.btn:hover::after{animation:shine .8s}
+@keyframes shine{to{left:130%}}
+.btn:active{transform:translateY(3px)}
+.btn.ghost{background:rgba(255,255,255,.7);color:#c2366a;border:1.5px solid rgba(255,79,123,.45);text-shadow:none;box-shadow:0 6px 16px var(--shadow)}
+.btn.ghost:hover{background:#fff;box-shadow:0 10px 22px rgba(255,79,123,.25)}
+.btn:disabled{opacity:.4;pointer-events:none;box-shadow:none}
+
+/* ---------- Multiple choice / matching ---------- */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.opt{
+  min-height:68px;padding:12px;border:0;border-radius:20px;
+  background:linear-gradient(180deg,rgba(255,143,177,.2),rgba(255,255,255,.88)),var(--card);color:var(--ink);
+  font:600 1.1rem/1.3 "Noto Sans Thai","Noto Sans JP";cursor:pointer;
+  box-shadow:0 8px 18px var(--shadow),inset 0 1px 0 #fff;transition:transform .12s,box-shadow .15s
+}
+.opt:hover{box-shadow:0 10px 22px rgba(110,70,150,.24),0 0 18px rgba(255,79,123,.35)}
+.opt:active{transform:translateY(3px)}
+.opts.jp .opt{font:700 2.4rem "Noto Sans JP";min-height:84px}
+.opt.ok{background:linear-gradient(180deg,#7bf0bd,#2fbf86);color:#053b25;box-shadow:0 0 24px rgba(47,191,134,.55)}
+.opt.no{background:linear-gradient(180deg,#ff8aa8,#e8383d);color:#fff;box-shadow:0 0 24px rgba(232,56,61,.5);animation:shake .4s}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:520px}
+.mc{
+  min-height:96px;padding:6px;border:0;border-radius:20px;
+  background:linear-gradient(180deg,rgba(255,143,177,.2),rgba(255,255,255,.88)),var(--card);color:var(--ink);
+  font:600 1rem/1.25 "Noto Sans Thai";cursor:pointer;
+  box-shadow:0 8px 18px var(--shadow),inset 0 1px 0 #fff;transition:transform .15s,box-shadow .15s
+}
+.mc:hover{box-shadow:0 10px 22px rgba(110,70,150,.24),0 0 18px rgba(255,79,123,.35)}
+.mc.jp{font:700 1.9rem "Noto Sans JP"}
+.mc.on{background:linear-gradient(180deg,#ffd0e0,#ff8fb1);color:#4a0f2a;transform:scale(1.05)}
+.mc.bad{background:var(--red);color:#fff;animation:shake .4s}
+.mc.hit{background:var(--ok);color:#053b25;opacity:.6;pointer-events:none}
+.hud2{display:flex;justify-content:space-between;font-weight:600;margin-bottom:14px}
+
+/* ---------- Bottom dock (ป้ายชื่ออยู่ในแถบ ไม่ล้นขอบ) ---------- */
+.dock{
+  position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:100;
+  display:flex;gap:12px;align-items:center;
+  background:rgba(255,255,255,.78);
+  backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);
+  border:1.5px solid rgba(255,143,177,.55);padding:8px 16px 22px;border-radius:30px;
+  box-shadow:0 14px 36px rgba(110,70,150,.28),0 0 24px rgba(255,79,123,.15),inset 0 1px 0 #fff;
+  max-width:92vw;box-sizing:border-box;margin-bottom:env(safe-area-inset-bottom)
+}
+.dock a{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,143,177,.14);border:1px solid rgba(255,143,177,.4);
+  color:var(--mut);font-size:1.15rem;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+  box-shadow:inset 0 1px 0 #fff;position:relative;flex-shrink:0
+}
+.dock a small{
+  position:absolute;bottom:-17px;font-family:"Noto Sans Thai",sans-serif;font-size:.65rem;font-weight:600;
+  color:var(--mut);white-space:nowrap;transition:color .25s
+}
+.dock a:hover,.dock a.act{
+  background:linear-gradient(135deg,#ff7aa2,#e8383d);color:#fff;transform:translateY(-5px) scale(1.1);
+  border-color:#fff;box-shadow:0 8px 20px rgba(232,56,61,.45),inset 0 1px 0 rgba(255,255,255,.5)
+}
+.dock a.act{box-shadow:0 0 0 2px var(--gold),0 8px 22px rgba(232,56,61,.5),inset 0 1px 0 rgba(255,255,255,.5)}
+.dock a.act small,.dock a:hover small{color:#c2275f}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+/* Desktop / Tablet */
+@media (min-width:769px){
+  .hero .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .dock{bottom:20px;padding:10px 24px 26px;gap:16px}
+  .dock a{width:50px;height:50px;font-size:1.3rem}
+  .dock a small{font-size:.72rem;bottom:-19px}
+}
+
+/* Mobile / small tablet */
+@media (max-width:768px){
+  main{padding:2vh 4vw 120px}
+  .hero{display:flex;flex-direction:column;gap:20px;align-items:center;text-align:center}
+  .hero h1{font-size:clamp(1.6rem,6.5vw,2.2rem);line-height:1.25}
+  .hero p{font-size:.88rem;margin:6px auto 14px}
+  .hero .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:100%}
+  .tile{min-height:110px;padding:12px;border-radius:18px}
+  .tile .kana{font-size:2.2rem}
+  .tile h2{font-size:1rem}
+  .tile small{font-size:.72rem}
+  .mwrap{order:-1;width:100%;margin-top:10px}
+  #mas{width:min(220px,55vw)}
+  .bub{max-width:280px;min-height:60px;padding:8px 14px}
+  .bub b{font-size:1.3rem}
+  .wbox{grid-template-columns:1fr}
+  .dock{bottom:10px;width:calc(100% - 24px);max-width:380px;padding:6px 12px 20px;gap:6px;justify-content:space-around}
+  .dock a{width:40px;height:40px;font-size:1.05rem}
+  .dock a small{font-size:.6rem;bottom:-15px}
+  /* ฉากหลังบนมือถือ: ย่อภูเขา/โทริ/น้ำให้พอดี */
+  body::before{height:38vh;bottom:9vh;background-size:100% 100%,auto 20vh,100% 40%,auto 100%;background-position:0 0,84% calc(100% - 2vh),0 100%,50% 100%}
+  body::after{height:12vh}
+  html::after{background-size:100% 100%,360px 97px,540px 144px}
+}
+
+/* Small phones */
+@media (max-width:640px){
+  .logo{font-size:1rem}
+  .vgrid{grid-template-columns:1fr 1fr;gap:10px}
+  .flip{height:140px}
+  .opts:not(.jp){grid-template-columns:1fr}
+  .pcard{grid-template-columns:1fr}
+  .grid{gap:7px}
+  .card{border-radius:14px}
+}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+
+/* =========================================================
+   MENU VARIETY — ให้การ์ดแต่ละใบมีสี/รูปทรง/ลายมุมไม่ซ้ำกัน
+   (ใช้ตำแหน่งลำดับ ไม่ต้องแก้ HTML | ไม่ทับ .tile.red / .tile.blue)
+   ========================================================= */
+.tiles>.tile:not(.red):not(.blue){
+  --c:255,79,123;--r:26px;
+  border-radius:var(--r);
+  background:linear-gradient(165deg,rgba(var(--c),.24),rgba(255,255,255,.82) 58%),var(--card);
+  --edge:linear-gradient(135deg,rgba(var(--c),.95),rgba(var(--c),.2) 50%,rgba(var(--c),.75))
+}
+.tiles>.tile:not(.red):not(.blue) .kana{color:rgb(var(--c));text-shadow:0 4px 16px rgba(var(--c),.3)}
+.tiles>.tile:not(.red):not(.blue)::after{background:radial-gradient(circle,rgba(var(--c),.45),transparent 68%)}
+.tiles>.tile:not(.red):not(.blue):hover{box-shadow:0 22px 40px rgba(110,70,150,.22),0 0 28px rgba(var(--c),.4)}
+
+/* 1) ฮิรางานะ — ชมพูซากุระ, มนกลม */
+.tiles>.tile:nth-child(1):not(.red):not(.blue){--c:255,79,123;--r:30px}
+
+/* 2) คาตาคานะ — ฟ้าคราม, มุมเหลี่ยมสลับ (ให้ความรู้สึกเหลี่ยมแบบคาตาคานะ), ลายมุมขวาบน */
+.tiles>.tile:nth-child(2):not(.red):not(.blue){--c:63,111,224;--r:30px 8px 30px 8px}
+.tiles>.tile:nth-child(2):not(.red):not(.blue)::after{right:-30px;top:-30px;bottom:auto}
+
+/* 3) คำศัพท์ — เขียวมัทฉะ, มุมสลับอีกด้าน, ลายมุมซ้ายล่าง */
+.tiles>.tile:nth-child(3):not(.red):not(.blue){--c:23,138,86;--r:8px 30px 8px 30px}
+.tiles>.tile:nth-child(3):not(.red):not(.blue)::after{left:-30px;right:auto}
+
+/* 4) คำช่วย — ส้มทอง, ทรงโค้งมน-ใหญ่, ลายวงใหญ่กลางขวา */
+.tiles>.tile:nth-child(4):not(.red):not(.blue){--c:217,115,13;--r:44px}
+.tiles>.tile:nth-child(4):not(.red):not(.blue)::after{right:-20px;bottom:auto;top:30%;width:150px;height:150px}
+
+/* หน้าหมวดคำศัพท์: วนสี 6 แบบ */
+.cats>.cat{--c:255,79,123;background:linear-gradient(180deg,rgba(var(--c),.22),rgba(255,255,255,.85)),var(--card);--edge:linear-gradient(135deg,rgba(var(--c),.95),rgba(var(--c),.2) 50%,rgba(var(--c),.7))}
+.cats>.cat:nth-child(6n+2){--c:63,111,224}
+.cats>.cat:nth-child(6n+3){--c:23,138,86}
+.cats>.cat:nth-child(6n+4){--c:217,115,13}
+.cats>.cat:nth-child(6n+5){--c:139,92,246}
+.cats>.cat:nth-child(6n+6){--c:0,150,170}
+.cats>.cat:hover{box-shadow:0 16px 28px rgba(110,70,150,.2),0 0 22px rgba(var(--c),.4)}
+.cats>.cat span{filter:drop-shadow(0 4px 8px rgba(var(--c),.4))}
+
+@media (max-width:768px){
+  .tiles>.tile:nth-child(1):not(.red):not(.blue){--r:22px}
+  .tiles>.tile:nth-child(2):not(.red):not(.blue){--r:22px 6px 22px 6px}
+  .tiles>.tile:nth-child(3):not(.red):not(.blue){--r:6px 22px 6px 22px}
+  .tiles>.tile:nth-child(4):not(.red):not(.blue){--r:30px}
+}
